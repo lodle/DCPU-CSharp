@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9C06938F-7482-4D29-BFC4-7E5A157BEBFB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NotchCpu.CompilerTasks</RootNamespace>
+    <AssemblyName>NotchCpu.CompilerTasks</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="EnvDTE100, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="EnvDTE80, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="envdte90, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>C:\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\PublicAssemblies\envdte90.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.Build.Tasks.v4.0" />
+    <Reference Include="Microsoft.Build.Utilities.v4.0" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="misc\Anotation.cs" />
+    <Compile Include="misc\Assembly.cs" />
+    <Compile Include="misc\CodeGenEx.cs" />
+    <Compile Include="misc\CompilableNode.cs" />
+    <Compile Include="misc\FunctionCompilableNode.cs" />
+    <Compile Include="misc\Grammar.cs" />
+    <Compile Include="misc\OpCodes.cs" />
+    <Compile Include="misc\OpParamResult.cs" />
+    <Compile Include="misc\RegCodes.cs" />
+    <Compile Include="misc\Scope.cs" />
+    <Compile Include="nodes\AssignmentNode.cs" />
+    <Compile Include="nodes\BinaryOperationNode.cs" />
+    <Compile Include="nodes\BlockNode.cs" />
+    <Compile Include="nodes\DataLiteralNode.cs" />
+    <Compile Include="nodes\FunctionCallNode.cs" />
+    <Compile Include="nodes\FunctionDeclarationNode.cs" />
+    <Compile Include="nodes\FunctionNode.cs" />
+    <Compile Include="nodes\IfStatementNode.cs" />
+    <Compile Include="nodes\InlineASMNode.cs" />
+    <Compile Include="nodes\LibraryFunctionNode.cs" />
+    <Compile Include="nodes\NumberLiteralNode.cs" />
+    <Compile Include="nodes\ReturnStatementNode.cs" />
+    <Compile Include="nodes\VariableDeclarationNode.cs" />
+    <Compile Include="nodes\VariableNameNode.cs" />
+    <Compile Include="NotchIrony\Class.cs" />
+    <Compile Include="nodes\ClassDeclarationNode.cs" />
+    <Compile Include="nodes\ClassNode.cs" />
+    <Compile Include="nodes\ClassNode_IL.cs" />
+    <Compile Include="NotchIrony\CSharpGrammer.cs" />
+    <Compile Include="nodes\FunctionCallNodeEx.cs" />
+    <Compile Include="nodes\VariableDeclarationNodeEx.cs" />
+    <Compile Include="NotchCpuCompilerTask.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="unused\DereferenceNode.cs" />
+    <None Include="unused\ComparisonNode.cs" />
+    <None Include="unused\BranchStatementNode.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\DCPUC_Lodle\Irony\010.Irony.2010.csproj">
+      <Project>{D81F5C91-D7DB-46E5-BC99-49488FB6814C}</Project>
+      <Name>010.Irony.2010</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NotchCpu.Emulator\NotchCpu.Emulator.csproj">
+      <Project>{42FA62A7-86B4-4E4F-A62B-DF97B3794C3A}</Project>
+      <Name>NotchCpu.Emulator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RunSharp\RunSharp.csproj">
+      <Project>{C835BB75-7955-4315-B52C-FA59E25219F4}</Project>
+      <Name>RunSharp</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assembler\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

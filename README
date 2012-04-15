@@ -1,0 +1,20 @@
+A Visual studio plugin that allows compiling C# code into binary/asm for 0x10c DCPU.
+
+Features:
+* Create new Visual studio project
+* Compile basic c# to:
+  - asm
+  - bin 
+  - exe 
+* Emulation using CLI at real speed (plus other speeds) with UI and step/reset controls
+
+ToDo:
+* Debugger support (Run programs and debug them via visual studio)
+* Object support
+* Small standard library
+* Auto complete and error checking in Visual Studio
+* Network support (running two simulators together)
+
+Big thanks to:
+https://github.com/Blecki/DCPUC
+https://github.com/densitynz/DCPU-16-ASM.NET
