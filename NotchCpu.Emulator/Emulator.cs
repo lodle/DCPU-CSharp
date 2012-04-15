@@ -129,7 +129,13 @@ namespace NotchCpu.Emulator
             if (_Thread != null)
                 throw new Exception("All ready running");
 
-            Reset();
+            Registers = new Registers();
+            Registers.MemUpdateEvent += new MemUpdateHandler(OnMemUpdate);
+            Registers.RegUpdateEvent += new MemUpdateHandler(OnRegUpdate);
+
+            Array.Copy(_Binary, Registers.Ram, _Binary.Length);
+
+            _Stopwatch.Restart();
 
             _Thread = new Thread(new ThreadStart(RunInternal));
             _Thread.Start();
@@ -151,12 +157,8 @@ namespace NotchCpu.Emulator
 
         public void Reset()
         {
-            Registers = new Registers();
-            Registers.MemUpdateEvent += new MemUpdateHandler(OnMemUpdate);
-            Registers.RegUpdateEvent += new MemUpdateHandler(OnRegUpdate);
-
-            Array.Copy(_Binary, Registers.Ram, _Binary.Length);
-            _Stopwatch.Restart();
+            StopEmulation();
+            StartEmulation();
         }
 
         [DebuggerStepThroughAttribute]
@@ -169,6 +171,7 @@ namespace NotchCpu.Emulator
             }
         }
 
+        [DebuggerStepThroughAttribute]
         public void RunOnce(ushort pc)
         {
             ushort val;
@@ -200,7 +203,6 @@ namespace NotchCpu.Emulator
         {
             try
             {
-                Reset();
                 Program.Run();
             }
             catch (Exception e)
@@ -215,8 +217,11 @@ namespace NotchCpu.Emulator
             }
         }
 
+        [DebuggerStepThroughAttribute]
         private void Step(out ushort value, bool ignore = false)
         {
+            Debug.WriteLine("PC: " + Registers.PC);
+
             var r = Registers.Ram[Registers.PC];
 
             ushort o = (ushort)(r & 0xF);
@@ -229,6 +234,7 @@ namespace NotchCpu.Emulator
             Registers.PC++;
         }
 
+        [DebuggerStepThroughAttribute]
         private void RunOpCode(ushort opCode, ushort a, ushort b, out ushort aOut, bool ignore)
         {
             System.GC.Collect();
@@ -439,6 +445,27 @@ namespace NotchCpu.Emulator
             }
 
             return 0;
+        }
+
+        public ushort GetIntValue(ushort reg)
+        {
+            return Registers.Reg[reg];
+        }
+
+        public String GetStringValue(ushort reg)
+        {
+            int loc = GetIntValue(reg);
+            int len = 0;
+
+            while (Registers.Ram[loc+len] != 0 && len < 255)
+                len++;
+
+            byte[] str = new byte[len];
+
+            for (int x = loc; x < loc + len; x++)
+                str[x - loc] = (byte)Registers.Ram[x];
+
+            return System.Text.ASCIIEncoding.ASCII.GetString(str, 0, len);
         }
     }
 }

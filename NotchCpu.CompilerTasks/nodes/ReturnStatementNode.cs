@@ -13,8 +13,8 @@ namespace DCPUC
             AddChild("value", treeNode.ChildNodes[1]);
             this.AsString = treeNode.FindTokenAndGetText();
 
-            _Annotation = new Annotation(context, treeNode);
-            _Annotation.type = AnotationType.FunctionReturn;
+            Annotation = new Annotation(context, treeNode);
+            Annotation.type = AnotationType.FunctionReturn;
         }
 
         public override void DoCompile(Scope scope, Register target)

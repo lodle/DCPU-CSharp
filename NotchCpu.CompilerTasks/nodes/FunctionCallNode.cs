@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Irony.Interpreter.Ast;
-using NotchCpu.CompilerTasks.misc;
+using NotchCpu.CompilerTasks;
 using TriAxis.RunSharp;
+using NotchCpu.CompilerTasks.misc;
 
 namespace DCPUC
 {
@@ -101,12 +102,12 @@ namespace DCPUC
                 }
             }
 
-            _Annotation.type = AnotationType.FunctionCall;
-            AddInstruction("JSR", _Func.Label, "", "Calling function", _Annotation);
+            Annotation.type = AnotationType.FunctionCall;
+            AddInstruction("JSR", _Func.Label, "", "Calling function", Annotation);
 
             if (_CodeGen != null)
             {
-                _CodeGen.MarkSequencePoint(_AssemblyGen, _Annotation);
+                _CodeGen.MarkSequencePoint(_AssemblyGen, Annotation);
                 _CodeGen.Invoke(_Func.ClassDecl.TypeGen, _Func.AsString.Split('.').Last());
             }
 

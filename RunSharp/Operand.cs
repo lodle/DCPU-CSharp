@@ -581,7 +581,6 @@ namespace TriAxis.RunSharp
 
 		#region Logical operations
 		bool logical = false;
-        protected String LocalSymInfo;
 
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification = "The operator is provided for convenience, so that the && and || operators work correctly. It should not be invoked under any other circumstances.")]
 		public static bool operator true(Operand op)
@@ -771,9 +770,8 @@ namespace TriAxis.RunSharp
 			public override Type Type { get { return op.Type.MakeByRefType(); } }
 		}
 
-        public void SetLocalSymInfo(string name)
+        public virtual void SetLocalSymInfo(string name)
         {
-            LocalSymInfo = name;
         }
     }
 }

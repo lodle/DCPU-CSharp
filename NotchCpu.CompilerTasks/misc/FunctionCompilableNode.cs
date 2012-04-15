@@ -88,7 +88,7 @@ namespace NotchCpu.CompilerTasks.misc
                 foreach (var pc in ret.BytesGeneratedPC)
                     _CodeGen.Invoke(_IEmulator, "RunOnce", pc);
             }
-            else 
+            else
             {
                 Debug.Assert(false);
             }

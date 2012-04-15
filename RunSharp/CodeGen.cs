@@ -339,12 +339,7 @@ namespace TriAxis.RunSharp
 					t = value.Type;
 
 				if (var == null)
-				{
 					var = g.il.DeclareLocal(t);
-
-					if (!String.IsNullOrEmpty(LocalSymInfo))
-						var.SetLocalSymInfo(LocalSymInfo);
-				}
 
 				g.EmitGetHelper(value, t, allowExplicitConversion);
 				g.il.Emit(OpCodes.Stloc, var);
@@ -358,9 +353,6 @@ namespace TriAxis.RunSharp
 				{
 					RequireType();
 					var = g.il.DeclareLocal(t);
-
-					if (!String.IsNullOrEmpty(LocalSymInfo))
-						var.SetLocalSymInfo(LocalSymInfo);
 				}
 
 				g.il.Emit(OpCodes.Ldloca, var);
@@ -399,6 +391,12 @@ namespace TriAxis.RunSharp
 				if (tHint == null)
 					tHint = Operand.GetType(op);
 			}
+
+            public override void SetLocalSymInfo(string name)
+            {
+                if (!String.IsNullOrEmpty(name))
+                    var.SetLocalSymInfo(name);
+            }
 		}
 
 		class _StaticTarget : Operand
@@ -426,17 +424,17 @@ namespace TriAxis.RunSharp
 
 		public void MarkSequencePoint(ISymbolDocumentWriter doc, int startLine, int startColumn, int endLine, int endColumn)
 		{
-			il.MarkSequencePoint(doc, startLine, startColumn, endLine, endColumn);
+            IL.MarkSequencePoint(doc, startLine, startColumn, endLine, endColumn);
 		}
 
 		public void BeginBlock()
 		{
-			il.BeginScope();
+            IL.BeginScope();
 		}
 
 		public void EndBlock()
 		{
-			il.EndScope();
+            IL.EndScope();
 		}
 	}
 }

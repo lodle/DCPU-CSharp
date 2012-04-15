@@ -57,9 +57,19 @@ namespace NotchCpu.CompilerTasks
         public override void DoPreCompile()
         {
             if (_RealFunctionCall != null)
+            {
                 _RealFunctionCall.DoPreCompile();
+
+                var old = _RealFunctionCall.Annotation.span.Location;
+                var loc = new SourceLocation(Annotation.span.Location.Position, old.Line, Annotation.span.Location.Column);
+
+                _RealFunctionCall.Annotation.sourcetext = Annotation.sourcetext + _RealFunctionCall.Annotation.sourcetext;
+                _RealFunctionCall.Annotation.span = new SourceSpan(loc, _RealFunctionCall.Annotation.span.Length + Annotation.span.Length);
+            }
             else
+            {
                 base.DoPreCompile();
+            }
         }
 
         public override void DoCompile(Scope scope, Register target)

@@ -10,13 +10,14 @@ using NotchCpu.CompilerTasks.misc;
 using NotchCpu.Emulator;
 using System.Diagnostics;
 
+
 namespace DCPUC
 {
-    public class FunctionDeclarationNode : CompilableNode
+    public class FunctionDeclarationNode : FunctionCompilableNode
     {
         Type _RetType;
-        List<Type> _ParamTypes = new List<Type>();
-        List<String> _ParamNames = new List<String>();
+        public List<Type> _ParamTypes = new List<Type>();
+        public List<String> _ParamNames = new List<String>();
         MethodAttributes _FunAtts;
 
         public Scope LocalScope = new Scope();
@@ -62,6 +63,8 @@ namespace DCPUC
 
         protected override void DoInit(Irony.Parsing.ParsingContext context, Irony.Parsing.ParseTreeNode treeNode)
         {
+            ParentFunct = this;
+
             AddChild("Block", treeNode.ChildNodes[5]);
 
             var parameters = treeNode.ChildNodes[4].ChildNodes;
@@ -147,10 +150,21 @@ namespace DCPUC
 
         public override void DoCompile(Scope scope, Register target)
         {
+            CodeGen.MarkSequencePoint(AssemblyGen, Annotation);
+
+            for (int i = 0; i < ParameterCount; ++i)
+            {
+                var param = Program.GetDefaultValue(_CodeGen, _ParamTypes[i]);
+                param.SetLocalSymInfo(_ParamNames[i]);
+
+                var val = Program.GetValue(_CodeGen, _IEmulator, _ParamTypes[i], i);
+                CodeGen.Assign(param, val, true);
+            }
+
             if (IsMain)
                 CodeGen.Invoke(IEmulator, "RunOnce", 0);
 
-            AddInstruction(":" + Label, "", "", new Annotation(_Annotation, AnotationType.Function));
+            AddInstruction(":" + Label, "", "", new Annotation(Annotation, AnotationType.Function));
 
             BlockStart();
 
@@ -188,7 +202,7 @@ namespace DCPUC
             if (lScope.stackDepth - LocalScope.stackDepth > 1)
                 AddInstruction("ADD", "SP", Util.hex(lScope.stackDepth - LocalScope.stackDepth - 1), "Cleanup stack", null);
 
-            AddInstruction("SET", "PC", "POP", "Return", new Annotation(_Annotation, AnotationType.FunctionReturn));
+            AddInstruction("SET", "PC", "POP", "Return", new Annotation(Annotation, AnotationType.FunctionReturn));
 
             if (CodeGen != null && !HasVoidReturn)
                 CodeGen.Return();

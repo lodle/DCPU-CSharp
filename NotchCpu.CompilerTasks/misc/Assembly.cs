@@ -113,16 +113,14 @@ namespace DCPUC
         public void Add(AsmInfo instruction)
         {
             AsmCode.Add(instruction);
-
-            int pos = ByteCode.Count();
             AssembleLine(instruction);
-
-            for (int x=pos; x<ByteCode.Count(); ++x)
-                instruction.BytesGeneratedPC.Add((ushort)x);
         }
 
-        private void AddByteCode(ushort p, Annotation ano)
+        private void AddByteCode(ushort p, Annotation ano, bool isMajor)
         {
+            if (isMajor)
+                AsmCode.Last().BytesGeneratedPC.Add((ushort)ByteCode.Count());
+
             ByteCode.Add(new ByteInfo(p, ano));
         }
 
@@ -244,14 +242,14 @@ namespace DCPUC
             OpParamResult p1 = OpParamResult.ParseParam(a);
             opCode |= (ushort)(((ushort)p1.Param << 10) & 0xFC00);
 
-            AddByteCode((ushort)opCode, ano);
+            AddByteCode((ushort)opCode, ano, true);
 
             if (p1.nextWord != false)
             {
                 if (p1.labelName.Length > 0)
                     AddReference(p1.labelName, ano);
 
-                AddByteCode(p1.NextWordValue, ano);
+                AddByteCode(p1.NextWordValue, ano, false);
             }
         }
 
@@ -263,14 +261,14 @@ namespace DCPUC
             opCode |= (ushort)(((uint)p1.Param << 4) & 0x3F0);
             opCode |= (ushort)(((uint)p2.Param << 10) & 0xFC00);
 
-            AddByteCode((ushort)opCode, ano);
+            AddByteCode((ushort)opCode, ano, true);
 
             if (p1.nextWord != false)
             {
                 if (p1.labelName.Length > 0)
                     AddReference(p1.labelName, ano);
 
-                AddByteCode(p1.NextWordValue, ano);
+                AddByteCode(p1.NextWordValue, ano, false);
             }
 
             if (p2.nextWord != false)
@@ -278,7 +276,7 @@ namespace DCPUC
                 if (p2.labelName.Length > 0)
                     AddReference(p2.labelName, ano);
 
-                AddByteCode(p2.NextWordValue, ano);
+                AddByteCode(p2.NextWordValue, ano, false);
 
             }
         }
@@ -316,7 +314,7 @@ namespace DCPUC
                 string asciiLine = datSegment.Replace("\"", "").Trim();
 
                 for (int i = 0; i < asciiLine.Length; i++)
-                    AddByteCode((ushort)asciiLine[i], ano);
+                    AddByteCode((ushort)asciiLine[i], ano, false);
             }
             else
             {
@@ -326,7 +324,7 @@ namespace DCPUC
                 else
                     val = Convert.ToUInt16(valStr, 10);
 
-                AddByteCode((ushort)val, ano);
+                AddByteCode((ushort)val, ano, false);
             }
         }
 

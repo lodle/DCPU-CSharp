@@ -6,7 +6,7 @@ using TriAxis.RunSharp;
 using System.Diagnostics.SymbolStore;
 using DCPUC;
 
-namespace NotchCpu.CompilerTasks.misc
+namespace NotchCpu.CompilerTasks
 {
     public static class CodeGenEx
     {
@@ -29,7 +29,7 @@ namespace NotchCpu.CompilerTasks.misc
             if (last == -1)
                 last = ano.sourcetext.Length;
 
-            codeGen.MarkSequencePoint(CodeGenEx.GetDoc(assemblyGen, ano.file), loc.Line+1, loc.Column, loc.Line+1, last);
+            codeGen.MarkSequencePoint(CodeGenEx.GetDoc(assemblyGen, ano.file), loc.Line + 1, loc.Column + 1, loc.Line + 1, loc.Column + last + 1);
         }
     }
 }

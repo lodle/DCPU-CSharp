@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Irony.Interpreter.Ast;
 using TriAxis.RunSharp;
+using NotchCpu.CompilerTasks;
 using NotchCpu.CompilerTasks.misc;
 
 namespace DCPUC
@@ -42,16 +43,18 @@ namespace DCPUC
 
         public override void DoCompile(Scope lScope, Register register)
         {
+            _CodeGen.MarkSequencePoint(_AssemblyGen, Annotation);
+
             BlockStart();
 
             foreach (var str in _Lines)
             {
                 if (str.StartsWith(":"))
-                    AddInstruction(str.ToUpper(), "", "", "", _Annotation);
+                    AddInstruction(str.ToUpper(), "", "", "", Annotation);
                 else
                     ProcessAsmLine(str);
 
-                _Annotation = null;
+                Annotation = null;
             }
 
             BlockEnd();
@@ -97,7 +100,7 @@ namespace DCPUC
             c = c.TrimStart(';');
             c = c.TrimStart();
 
-            AddInstruction(op, MakeUpper(a), MakeUpper(b), c, _Annotation);
+            AddInstruction(op, MakeUpper(a), MakeUpper(b), c, Annotation);
         }
 
         private string MakeUpper(string a)

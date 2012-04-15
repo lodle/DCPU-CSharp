@@ -36,8 +36,8 @@ namespace DCPUC
 
             dataLabel = Scope.GetDataLabel();
 
-            _Annotation = new Annotation(context, treeNode);
-            _Annotation.type = AnotationType.DataLabel;
+            Annotation = new Annotation(context, treeNode);
+            Annotation.type = AnotationType.DataLabel;
         }
 
         public override bool IsConstant()
@@ -52,7 +52,7 @@ namespace DCPUC
 
         public override void DoCompile(Scope scope, Register target) 
         {
-            AddInstruction("SET", Scope.GetRegisterLabelFirst((int)target), dataLabel, _Annotation);
+            AddInstruction("SET", Scope.GetRegisterLabelFirst((int)target), dataLabel, Annotation);
             Scope.AddData(dataLabel, data);
 
             if (target == Register.STACK) 

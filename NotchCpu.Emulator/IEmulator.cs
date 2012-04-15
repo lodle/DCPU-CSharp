@@ -59,5 +59,9 @@ namespace NotchCpu.Emulator
 
         [DebuggerStepThrough]
         Form GetMainForm();
+
+        ushort GetIntValue(ushort reg);
+
+        String GetStringValue(ushort reg);
     }
 }

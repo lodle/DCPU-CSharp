@@ -131,7 +131,10 @@ namespace NotchCpu.CompilerTasks
 
         internal Operand GetDefaultValue(CodeGen c, Type type)
         {
-            if (type == typeof(ushort) || type == typeof(short))
+            if (type == typeof(ushort))
+                return c.Local((ushort)0);
+
+            if (type == typeof(short))
                 return c.Local((short)0);
 
             if (type == typeof(void))
@@ -150,7 +153,7 @@ namespace NotchCpu.CompilerTasks
 
             var exeName = Path.GetFileName(exePath);
 
-            AssemblyGen = new AssemblyGen(AppDomain.CurrentDomain, new AssemblyName(Path.GetFileNameWithoutExtension(exeName)), AssemblyBuilderAccess.RunAndSave, exeName, true);
+            AssemblyGen = new AssemblyGen(AppDomain.CurrentDomain, new AssemblyName(Path.GetFileNameWithoutExtension(exeName)), AssemblyBuilderAccess.RunAndSave, exeName, true, true);
             AssemblyGen.PEFileKind = PEFileKinds.WindowApplication;
 
             assembly.Clear();
@@ -230,6 +233,17 @@ namespace NotchCpu.CompilerTasks
                     run.Invoke(MainFunction.ClassDecl.TypeGen, "DCPU_Main");
                 }
             }
+        }
+
+        internal static Operand GetValue(CodeGen _CodeGen, FieldGen _IEmulator, Type type, int reg)
+        {
+            var funct = "GetIntValue";
+
+            if (type == typeof(string))
+                funct = "GetStringValue";
+
+            //return Static.Invoke(typeof(IEmulator), _IEmulator, funct, reg);
+            return _IEmulator.Invoke(funct, reg);
         }
     }
 }

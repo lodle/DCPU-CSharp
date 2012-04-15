@@ -57,7 +57,7 @@ namespace DCPUC
     {
         protected Program Program { get; private set; }
 
-        protected Annotation _Annotation;
+        public Annotation Annotation;
         protected Assembly _Assembly;
 
         protected abstract void DoInit(Irony.Parsing.ParsingContext context, Irony.Parsing.ParseTreeNode treeNode);
@@ -107,7 +107,7 @@ namespace DCPUC
 
             base.Init(context, treeNode);
 
-            _Annotation = new Annotation(context, treeNode);
+            Annotation = new Annotation(context, treeNode);
             DoInit(context, treeNode);
         }
 

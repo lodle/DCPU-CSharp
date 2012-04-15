@@ -13,8 +13,8 @@ namespace DCPUC
             AddChild("LValue", treeNode.ChildNodes[0].ChildNodes[0]);
             AddChild("RValue", treeNode.ChildNodes[2]);
 
-            _Annotation.type = AnotationType.Assignment;
-            _Annotation.name = ChildNodes[0].AsString;
+            Annotation.type = AnotationType.Assignment;
+            Annotation.name = ChildNodes[0].AsString;
         }
 
         public override void DoCompile(Scope scope, Register target)
@@ -28,8 +28,8 @@ namespace DCPUC
             {
                 (ChildNodes[1] as CompilableNode).DoCompile(scope, variable.location);
 
-                _Annotation.register = (int)variable.location;
-                AddInstruction("NOP", "", "", _Annotation);
+                Annotation.register = (int)variable.location;
+                AddInstruction("NOP", "", "", Annotation);
             }
             else
             {
@@ -41,15 +41,15 @@ namespace DCPUC
                 if (scope.stackDepth - variable.stackOffset > 1)
                 {
                     var ins = String.Format("[{0} + {1}]", Util.hex(scope.stackDepth - variable.stackOffset - 1), Scope.TempRegister);
-                    _Annotation.register = register;
+                    Annotation.register = register;
 
                     AddInstruction("SET", Scope.TempRegister, "SP");
-                    AddInstruction("SET", ins, Scope.GetRegisterLabelSecond(register), "Fetching variable", _Annotation);
+                    AddInstruction("SET", ins, Scope.GetRegisterLabelSecond(register), "Fetching variable", Annotation);
                 }
                 else
                 {
-                    _Annotation.register = register;
-                    AddInstruction("SET", "PEEK", Scope.GetRegisterLabelSecond(register), "Fetching variable", _Annotation);
+                    Annotation.register = register;
+                    AddInstruction("SET", "PEEK", Scope.GetRegisterLabelSecond(register), "Fetching variable", Annotation);
                 }
 
                 if (register == (int)Register.STACK) 
