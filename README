@@ -7,13 +7,34 @@ Features:
   - bin 
   - exe 
 * Emulation using CLI at real speed (plus other speeds) with UI and step/reset controls
+* Debugger support (Run programs and debug them via visual studio)
+* Language Features:
+	- Static function calls
+	- variables
+	- Inline asm
+
 
 ToDo:
-* Debugger support (Run programs and debug them via visual studio)
-* Object support
 * Small standard library
 * Auto complete and error checking in Visual Studio
 * Network support (running two simulators together)
+* Language Features
+	- If
+	- For
+	- While
+	- Switch
+	- Lambda
+	- Arrays
+	- Objects
+		- Fields/Properties
+		- New/Delete
+		- Virtual functions
+		- Inheritance
+		- Interfaces
+	- Delegates/events
+	- try/catch exceptions
+	- using
+	- namespace
 
 Big thanks to:
 https://github.com/Blecki/DCPUC
