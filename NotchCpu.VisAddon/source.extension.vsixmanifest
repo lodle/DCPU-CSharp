@@ -16,15 +16,11 @@
       </VisualStudio>
     </SupportedProducts>
     <SupportedFrameworkRuntimeEdition MinVersion="4.0" MaxVersion="4.0" />
+    <SystemComponent>false</SystemComponent>
   </Identifier>
-  <References>
-    <Reference Id="Microsoft.VisualStudio.MPF" MinVersion="10.0">
-      <Name>Visual Studio MPF</Name>
-    </Reference>
-  </References>
+  <References />
   <Content>
-    <Assembly AssemblyName="NotchCpu.CompilerTasks" />
-    <VsPackage>|%CurrentProject%;PkgdefProjectOutputGroup|</VsPackage>
     <ProjectTemplate>ProjectTemplates</ProjectTemplate>
+    <ItemTemplate>ItemTemplates</ItemTemplate>
   </Content>
 </Vsix>

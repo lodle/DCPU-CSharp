@@ -1,0 +1,13 @@
+﻿<VSTemplate Version="2.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
+  <TemplateData>
+    <Name>Text File</Name>
+    <Description>A blank text file.</Description>
+    <ProjectType>NotchCpu</ProjectType>
+    <SortOrder>180</SortOrder>
+    <DefaultName>TextFile.txt</DefaultName>
+    <Icon>Text.ico</Icon>
+  </TemplateData>
+  <TemplateContent>
+    <ProjectItem TargetFileName="$fileinputname$.cs">TextFile.txt</ProjectItem>
+  </TemplateContent>
+</VSTemplate>

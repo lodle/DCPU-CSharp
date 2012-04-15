@@ -1,0 +1,13 @@
+﻿<VSTemplate Type="Item" Version="2.0.0"
+   xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
+  <TemplateData>
+    <Name>Assembly</Name>
+    <Description>An empty assembly file</Description>
+    <DefaultName>Assembly</DefaultName>
+    <ProjectType>NotchCpu</ProjectType>
+    <Icon>Text.ico</Icon>
+  </TemplateData>
+  <TemplateContent>
+    <ProjectItem TargetFileName="$fileinputname$.dcpu" ReplaceParameters="true">DCPUFile.dcpu</ProjectItem>
+  </TemplateContent>
+</VSTemplate>

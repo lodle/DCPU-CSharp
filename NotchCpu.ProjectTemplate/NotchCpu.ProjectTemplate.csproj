@@ -50,20 +50,37 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Templates\Items\DCPUFile\DCPUFile.dcpu" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Templates\ConsoleApp\NotchCpuApp.nproj">
+    <None Include="Templates\Projects\ConsoleApp\NotchCpuApp.nproj">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Templates\ConsoleApp\Program.cs" />
+    <None Include="Templates\Projects\ConsoleApp\Program.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Templates\ConsoleApp\__TemplateIcon.ico" />
+    <None Include="Templates\Projects\ConsoleApp\__TemplateIcon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <VSTemplate Include="Templates\ConsoleApp\NotchConsoleApp.vstemplate">
+    <VSTemplate Include="Templates\Projects\ConsoleApp\NotchConsoleApp.vstemplate">
       <SubType>Designer</SubType>
     </VSTemplate>
+  </ItemGroup>
+  <ItemGroup>
+    <VSTemplate Include="Templates\Items\CSharpFile\CSharpFile.vstemplate" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Templates\Items\CSharpFile\CSharpFile.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <VSTemplate Include="Templates\Items\DCPUFile\DCPU.vstemplate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\Items\CSharpFile\Text.ico" />
+    <Content Include="Templates\Items\DCPUFile\Text.ico" />
+    <Content Include="Templates\Items\TextFile\Text.ico" />
+    <Content Include="Templates\Items\TextFile\TextFile.txt" />
+    <VSTemplate Include="Templates\Items\TextFile\TextFile.vstemplate" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\VSSDK\Microsoft.VsSDK.targets" />
