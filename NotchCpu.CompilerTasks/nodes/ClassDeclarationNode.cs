@@ -32,8 +32,8 @@ namespace NotchCpu.CompilerTasks
                     break;
             }
 
-            AsString = treeNode.ChildNodes[1].FindTokenAndGetText(); 
-            Class.RegClass(AsString, this);
+            AsString = treeNode.ChildNodes[1].FindTokenAndGetText();
+            Program.RegClass(AsString, this);
         }
 
         public override void DoCompile(Scope scope, Register target)

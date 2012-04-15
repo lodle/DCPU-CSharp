@@ -16,7 +16,7 @@ namespace Tester
 
             //Directory.CreateDirectory("");
 
-            compiler.SourceFiles = new String[] { "NotchTest.txt" };
+            compiler.SourceFiles = new String[] { "NotchTest.cs", "Console.cs" };
 
             compiler.OutputAssembly = "CompilerTest.exe";
             compiler.BinOutput = "CompilerTest.bin";

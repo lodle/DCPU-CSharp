@@ -21,7 +21,7 @@ namespace NotchCpu.CompilerTasks
             if (parts.Count() == 1)
                 ret = base.FindFunction(node, name);
             else
-                ret = base.FindFunction(Class.FindClass(parts[0]), parts[1]);
+                ret = base.FindFunction(Program.FindClass(parts[0]), parts[1]);
 
             if (ret != null)
                 ret.Label = String.Format(ret.Label, (ret as FunctionDeclarationNode).ClassDecl.AsString).ToUpper();

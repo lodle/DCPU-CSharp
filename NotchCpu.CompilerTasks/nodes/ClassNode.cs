@@ -13,8 +13,6 @@ namespace NotchCpu.CompilerTasks
 {
     public partial class ClassNode : CompilableNode
     {
-        AssemblyGen _AssemblyGen;
-
         protected override void DoInit(Irony.Parsing.ParsingContext context, Irony.Parsing.ParseTreeNode treeNode)
         {
             foreach (var f in treeNode.ChildNodes)
@@ -26,49 +24,20 @@ namespace NotchCpu.CompilerTasks
             foreach (var child in ChildNodes)
             {
                 Debug.Assert(child is ClassDeclarationNode);
-                (child as ClassDeclarationNode).DoPreCompile(_AssemblyGen);
+                (child as ClassDeclarationNode).DoPreCompile(Program.AssemblyGen);
             }
         }
 
         public override void DoCompile(Scope scope, Register target)
         {
-            AddInstruction("SET", "PC", Class.MainFunction.Label);
+            if (Program.EmitMainJump)
+                AddInstruction("SET", "PC", Program.MainFunction.Label);
 
             foreach (var child in ChildNodes)
             {
                 Debug.Assert(child is ClassDeclarationNode);
                 (child as ClassDeclarationNode).DoCompile(scope, target);
             }
-        }
-
-        public void Compile(String exePath, DCPUC.Assembly assembly)
-        {
-            var mainFunction = Class.MainFunction;
-
-            if (mainFunction == null)
-                throw new Exception("Failed to find main function");
-
-            var exeName = Path.GetFileName(exePath);
-
-            _AssemblyGen = new AssemblyGen(AppDomain.CurrentDomain, new AssemblyName(Path.GetFileNameWithoutExtension(exeName)), AssemblyBuilderAccess.RunAndSave, exeName, true);
-            _AssemblyGen.PEFileKind = PEFileKinds.WindowApplication;
-
-            base.Compile(assembly);
-
-            var bin = assembly.GetByteCode();
-
-            //Swap them for cli as it stores them backwards
-            for (int x = 0; x < bin.Length; x += 2)
-            {
-                byte a = bin[x];
-                bin[x] = bin[x + 1];
-                bin[x + 1] = a;
-            }
-
-            CompileCliMainClass(bin);
-
-            _AssemblyGen.Save(exePath, PortableExecutableKinds.Required32Bit, ImageFileMachine.I386);
-            _AssemblyGen = null;
         }
     }
 }

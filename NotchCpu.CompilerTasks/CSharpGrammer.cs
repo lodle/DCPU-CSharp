@@ -11,11 +11,13 @@ namespace NotchCpu.CompilerTasks
     [Language("c#", "3.5", "Sample c# grammar")]
     public class CSharpGrammar : Irony.Parsing.Grammar
     {
-
+        public Program ProgramInfo { get; protected set; }
 
         TerminalSet _skipTokensInPreview = new TerminalSet(); //used in token preview for conflict resolution
-        public CSharpGrammar()
+        public CSharpGrammar(Program programInfo)
         {
+            ProgramInfo = programInfo;
+
 
             this.LanguageFlags |= Irony.Parsing.LanguageFlags.CreateAst;
 

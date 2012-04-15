@@ -82,11 +82,10 @@
     <Compile Include="nodes\ReturnStatementNode.cs" />
     <Compile Include="nodes\VariableDeclarationNode.cs" />
     <Compile Include="nodes\VariableNameNode.cs" />
-    <Compile Include="NotchIrony\Class.cs" />
+    <Compile Include="misc\Program.cs" />
     <Compile Include="nodes\ClassDeclarationNode.cs" />
     <Compile Include="nodes\ClassNode.cs" />
-    <Compile Include="nodes\ClassNode_IL.cs" />
-    <Compile Include="NotchIrony\CSharpGrammer.cs" />
+    <Compile Include="CSharpGrammer.cs" />
     <Compile Include="nodes\FunctionCallNodeEx.cs" />
     <Compile Include="nodes\VariableDeclarationNodeEx.cs" />
     <Compile Include="NotchCpuCompilerTask.cs" />
@@ -96,7 +95,7 @@
     <None Include="unused\BranchStatementNode.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DCPUC_Lodle\Irony\010.Irony.2010.csproj">
+    <ProjectReference Include="..\Irony\010.Irony.2010.csproj">
       <Project>{D81F5C91-D7DB-46E5-BC99-49488FB6814C}</Project>
       <Name>010.Irony.2010</Name>
     </ProjectReference>
@@ -109,9 +108,7 @@
       <Name>RunSharp</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Assembler\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

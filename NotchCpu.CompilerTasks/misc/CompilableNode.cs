@@ -7,6 +7,7 @@ using Irony.Parsing;
 using TriAxis.RunSharp;
 using NotchCpu.Emulator;
 using System.Diagnostics;
+using NotchCpu.CompilerTasks;
 
 namespace DCPUC
 {
@@ -54,11 +55,14 @@ namespace DCPUC
 
     public abstract class CompilableNode : AstNode
     {
+        protected Program Program { get; private set; }
+
         protected Annotation _Annotation;
         protected Assembly _Assembly;
 
         protected abstract void DoInit(Irony.Parsing.ParsingContext context, Irony.Parsing.ParseTreeNode treeNode);
         public abstract void DoCompile(Scope scope, Register target);
+
 
         public virtual void DoPreCompile()
         {
@@ -99,49 +103,30 @@ namespace DCPUC
 
         public override void Init(Irony.Parsing.ParsingContext context, Irony.Parsing.ParseTreeNode treeNode)
         {
+            Program = (context.Language.Grammar as CSharpGrammar).ProgramInfo;
+
             base.Init(context, treeNode);
 
             _Annotation = new Annotation(context, treeNode);
             DoInit(context, treeNode);
         }
 
-        public void Compile(Assembly asm)
+        public void PreCompile()
         {
-            asm.Clear();
-
-            SetAssembly(asm);
-
             DoPreCompile();
-            DoCompile(new Scope(), Register.DISCARD);
-            DoPostCompile();
-
-            FinishCompile();
-
-            SetAssembly(null);
         }
 
-        private void FinishCompile()
+        public void Compile()
         {
-            AddInstruction("SUB", "PC", "1", "Fin: Loop to the end of time", null);
-
-            foreach (var dataItem in DCPUC.Scope.dataElements)
-            {
-                AddInstruction(":" + dataItem.Item1, "", "");
-                var datString = "";
-
-                foreach (var item in dataItem.Item2)
-                {
-                    datString += DCPUC.Util.hex(item);
-                    datString += ", ";
-                }
-
-                AddInstruction("DAT", datString.Substring(0, datString.Length - 2), "");
-            }
-
-            _Assembly.Finalise();
+            DoCompile(new Scope(), Register.DISCARD);
         }
 
-        protected void SetAssembly(Assembly asm)
+        public void PostCompile()
+        {
+            DoPostCompile();
+        }
+
+        public void SetAssembly(Assembly asm)
         {
             _Assembly = asm;
             SetAssembly(asm, ChildNodes);

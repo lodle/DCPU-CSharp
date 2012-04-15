@@ -88,7 +88,7 @@ namespace NotchCpu.CompilerTasks.misc
                 foreach (var pc in ret.BytesGeneratedPC)
                     _CodeGen.Invoke(_IEmulator, "RunOnce", pc);
             }
-            else if (ins.ToUpper() != "NOP")
+            else 
             {
                 Debug.Assert(false);
             }

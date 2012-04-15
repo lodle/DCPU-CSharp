@@ -94,11 +94,11 @@ namespace DCPUC
             Label = Scope.GetLabel() + "_" + AsString;
             LocalScope.activeFunction = this;
 
-            Class.RegFunction(this);
+            Program.RegFunction(this);
 
             foreach (var v in variables)
             {
-                _ParamTypes.Add(Class.GetType(v.type));
+                _ParamTypes.Add(Program.GetType(v.type));
                 _ParamNames.Add(v.name);
             }
 
@@ -117,7 +117,7 @@ namespace DCPUC
                     break;
             }
 
-            _RetType = Class.GetType(treeNode.ChildNodes[2].FindTokenAndGetText());
+            _RetType = Program.GetType(treeNode.ChildNodes[2].FindTokenAndGetText());
 
             bool isStatic = treeNode.ChildNodes[1].FindTokenAndGetText() == "static";
 
@@ -130,22 +130,26 @@ namespace DCPUC
 
             if (AsString == "Main" && isStatic)
             {
-                Class.SetMain(this);
+                Program.SetMain(this);
                 IsMain = true;
                 Label = Label.Split('_').First() + "_MAIN";
 
                 References++;
+
+                AsString = "DCPU_" + AsString;
             }
         }
 
         public override void DoPreCompile()
         {
-            Console.WriteLine("Precompiling function: " + AsString);
             base.DoPreCompile();
         }
 
         public override void DoCompile(Scope scope, Register target)
         {
+            if (IsMain)
+                CodeGen.Invoke(IEmulator, "RunOnce", 0);
+
             AddInstruction(":" + Label, "", "", new Annotation(_Annotation, AnotationType.Function));
 
             BlockStart();

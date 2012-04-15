@@ -44,23 +44,35 @@ namespace NotchCpu.CompilerTasks
 
         public override bool Execute()
         {
-            var parser = new Irony.Parsing.Parser(new CSharpGrammar());
-            ParseTree tree = parser.Parse(File.ReadAllText(SourceFiles[0]), SourceFiles[0]);
+            var prog = new Program();
+            List<ClassNode> nodes = new List<ClassNode>();
 
-            if (tree.HasErrors())
+            foreach (var file in SourceFiles)
             {
-                foreach (var msg in tree.ParserMessages)
-                    LogError(msg.Level.ToString(), "", "", SourceFiles[0], msg.Location.Line, msg.Location.Column, msg.Location.Line, msg.Location.Column + 10, msg.Message);
+                var ext = Path.GetExtension(file);
 
-                return false;
+                if (ext != ".cs")
+                    continue;
+
+                var parser = new Irony.Parsing.Parser(new CSharpGrammar(prog));
+                ParseTree tree = parser.Parse(File.ReadAllText(file), file);
+
+                if (tree.HasErrors())
+                {
+                    foreach (var msg in tree.ParserMessages)
+                        LogError(msg.Level.ToString(), "", "", file, msg.Location.Line, msg.Location.Column, msg.Location.Line, msg.Location.Column + 10, msg.Message);
+
+                    return false;
+                }
+
+                nodes.Add(tree.Root.AstNode as ClassNode);
             }
 
-            var root = tree.Root.AstNode as ClassNode;
             var assembly = new DCPUC.Assembly();
 
             try
             {
-                DoCompile(root, assembly);
+                Compile(prog, nodes, assembly);
                 return true;
             }
             catch (Exception c)
@@ -70,7 +82,7 @@ namespace NotchCpu.CompilerTasks
             }
         }
 
-        private void DoCompile(ClassNode root, DCPUC.Assembly assembly)
+        private void Compile(Program prog, List<ClassNode> nodes, DCPUC.Assembly assembly)
         {
             if (String.IsNullOrEmpty(AsmOutput))
                 AsmOutput = OutputAssembly.Replace(".exe", ".dcpu");
@@ -78,7 +90,7 @@ namespace NotchCpu.CompilerTasks
             if (String.IsNullOrEmpty(BinOutput))
                 BinOutput = OutputAssembly.Replace(".exe", ".bin");
 
-            Compile(root, assembly);
+            DoCompile(prog, nodes, assembly);
 
             String[] asm = assembly.GetAsmCode();
             SaveAsm(asm);
@@ -90,7 +102,7 @@ namespace NotchCpu.CompilerTasks
             LogMessage("Bin file location: " + BinOutput);
         }
 
-        private void Compile(ClassNode root, DCPUC.Assembly assembly)
+        private void DoCompile(Program prog, List<ClassNode> nodes, DCPUC.Assembly assembly)
         {
             String fileName = Path.GetFileName(OutputAssembly);
             String workingDir = Directory.GetCurrentDirectory();
@@ -98,7 +110,7 @@ namespace NotchCpu.CompilerTasks
 
             Directory.SetCurrentDirectory(newDir);
 
-            root.Compile(OutputAssembly, assembly);
+            prog.Compile(nodes, OutputAssembly, assembly);
 
             Directory.SetCurrentDirectory(workingDir);
         }
@@ -139,7 +151,7 @@ namespace NotchCpu.CompilerTasks
             if (WriteToConsole)
                 Console.WriteLine("ERR: " + message);
             else
-                LogError(subcategory, errorCode, helpKeyword, file, lineNumber, columnNumber, endLineNumber, endColumnNumber, message, messageArgs);
+                Log.LogError(subcategory, errorCode, helpKeyword, file, lineNumber, columnNumber, endLineNumber, endColumnNumber, message, messageArgs);
         }
       
     }

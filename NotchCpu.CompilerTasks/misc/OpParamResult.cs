@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NotchCpu.CompilerTasks.Assembler;
+using System.Globalization;
 
 namespace DCPUC.misc
 {
@@ -99,9 +100,10 @@ namespace DCPUC.misc
             // if value is < 0x1F we can encode it into the param directly, 
             // else it has to be next value!
 
-            UInt16 maxValue = Convert.ToUInt16("0x1F", 16);
+            UInt16 maxValue = 0x1F;
             UInt16 literalValue = 0;
-            try
+
+            if (IsNumber(Param))
             {
                 if (Param[0] == '\'' && Param[Param.Length - 1] == '\'' && Param.Length == 3)
                 {
@@ -124,12 +126,22 @@ namespace DCPUC.misc
                     opParamResult.NextWordValue = literalValue;
                 }
             }
-            catch
+            else
             {
                 opParamResult.Param = (ushort)dcpuRegisterCodes.NextWord_Literal_Value;
                 opParamResult.nextWord = true;
                 opParamResult.labelName = Param;
             }
+        }
+
+        private static bool IsNumber(string str)
+        {
+            int temp;
+
+            if (str.StartsWith("0x"))
+                str = str.Substring(2);
+
+            return Int32.TryParse(str, NumberStyles.HexNumber, null, out temp);
         }
 
         private static void ParseParamMemRefNextWord(OpParamResult opParamResult, string Param)

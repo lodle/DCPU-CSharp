@@ -22,6 +22,9 @@ namespace DCPUC
 
         protected virtual FunctionDeclarationNode FindFunction(AstNode node, string name)
         {
+            if (node == null)
+                return null;
+
             foreach (var child in node.ChildNodes)
                 if (child is FunctionDeclarationNode && (child as FunctionDeclarationNode).AsString == name)
                     return child as FunctionDeclarationNode;

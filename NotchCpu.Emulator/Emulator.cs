@@ -171,10 +171,16 @@ namespace NotchCpu.Emulator
 
         public void RunOnce(ushort pc)
         {
-            if (Registers.PC != pc)
-                throw new Exception("Run Once pc doesnt match registers pc");
-
             ushort val;
+
+            while (Registers.PC != pc)
+            {
+                if (LogEvent != null)
+                    LogEvent(String.Format("Warning: RunOnce pc doesnt match current pc [{0} != {1}]", pc, Registers.PC));
+
+                Step(out val);
+            }
+
             Step(out val);
         }
 
@@ -194,6 +200,7 @@ namespace NotchCpu.Emulator
         {
             try
             {
+                Reset();
                 Program.Run();
             }
             catch (Exception e)

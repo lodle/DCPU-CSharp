@@ -107,8 +107,8 @@ namespace DCPUC
         public List<AsmInfo> AsmCode = new List<AsmInfo>();
         public List<ByteInfo> ByteCode = new List<ByteInfo>();
 
-        private Dictionary<string, ByteInfo> _LabelAddressDitionary = new Dictionary<string, ByteInfo>();
-        private Dictionary<ByteInfo, string> _LabelReferences = new Dictionary<ByteInfo, string>();
+        Dictionary<string, ByteInfo> _LabelAddressDitionary = new Dictionary<string, ByteInfo>();
+        Dictionary<ByteInfo, string> _LabelReferences = new Dictionary<ByteInfo, string>();
 
         public void Add(AsmInfo instruction)
         {
@@ -134,6 +134,22 @@ namespace DCPUC
 
         public void Finalise()
         {
+            Add(new AsmInfo(new Instruction("SUB", "PC", "1", "Fin: Loop to the end of time"), null));
+
+            foreach (var dataItem in DCPUC.Scope.dataElements)
+            {
+                Add(new AsmInfo(new Instruction(":" + dataItem.Item1, "", ""), null));
+                var datString = "";
+
+                foreach (var item in dataItem.Item2)
+                {
+                    datString += DCPUC.Util.hex(item);
+                    datString += ", ";
+                }
+
+                Add(new AsmInfo(new Instruction("DAT", datString.Substring(0, datString.Length - 2), ""), null));
+            }
+
             // lets loop through all the locations where we have label references
             foreach (var key in _LabelReferences.Keys)
             {
@@ -181,6 +197,9 @@ namespace DCPUC
         /// </summary>
         private ushort AssembleLine(AsmInfo instruction)
         {
+            if (instruction.Ins.ins.ToUpper() == "NOP")
+                return 0xFFFF;
+
             var ano = instruction.Ano;
             var ins = instruction.Ins.ins;
             var a = instruction.Ins.a;
