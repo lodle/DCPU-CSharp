@@ -12,16 +12,15 @@ Features:
 	- Static function calls
 	- variables
 	- Inline asm
-
+	- If
+	- For
+	- While
 
 ToDo:
 * Small standard library
 * Auto complete and error checking in Visual Studio
 * Network support (running two simulators together)
 * Language Features
-	- If
-	- For
-	- While
 	- Switch
 	- Lambda
 	- Arrays
@@ -35,6 +34,8 @@ ToDo:
 	- try/catch exceptions
 	- using
 	- namespace
+	- cast
+	- type saftey
 
 Big thanks to:
 https://github.com/Blecki/DCPUC

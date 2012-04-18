@@ -5,6 +5,7 @@ using System.Text;
 using Irony.Parsing;
 using System.Globalization;
 using DCPUC;
+using NotchCpu.CompilerTasks.nodes.loops;
 
 namespace NotchCpu.CompilerTasks
 {
@@ -14,6 +15,12 @@ namespace NotchCpu.CompilerTasks
         public Program ProgramInfo { get; protected set; }
 
         TerminalSet _skipTokensInPreview = new TerminalSet(); //used in token preview for conflict resolution
+
+        public CSharpGrammar()
+            : this(new Program())
+        {
+        }
+
         public CSharpGrammar(Program programInfo)
         {
             ProgramInfo = programInfo;
@@ -39,9 +46,9 @@ namespace NotchCpu.CompilerTasks
             var expression = new NonTerminal("Expression");
             var parenExpression = new NonTerminal("Paren Expression");
             var binaryOperation = new NonTerminal("Binary Operation", typeof(BinaryOperationNode));
-            //var comparison = new NonTerminal("Comparison", typeof(ComparisonNode));
+            var comparison = new NonTerminal("Comparison", typeof(ComparisonNode));
             var @operator = ToTerm("+") | "-" | "*" | "/" | "%" | "&" | "|" | "^";
-            var comparisonOperator = ToTerm("==") | "!=" | ">";
+            var comparisonOperator = ToTerm("==") | "!=" | ">" | "<" | ">=" | "<=" | "&&" | "||";
             var variableDeclaration = new NonTerminal("Variable Declaration", typeof(VariableDeclarationNode));
             var statement = new NonTerminal("Statement");
 
@@ -50,10 +57,9 @@ namespace NotchCpu.CompilerTasks
             var classList = new NonTerminal("Class List", typeof(ClassNode));
 
             var assignment = new NonTerminal("Assignment", typeof(AssignmentNode));
-            //var ifStatement = new NonTerminal("If", typeof(IfStatementNode));
+            var ifStatement = new NonTerminal("If", typeof(IfStatementNode));
             var block = new NonTerminal("Block");
             var functionblock = new NonTerminal("FunctionBlock");
-            //var ifElseStatement = new NonTerminal("IfElse", typeof(IfStatementNode));
             var parameterList = new NonTerminal("Parameter List");
             var classDeclaration = new NonTerminal("Class Declaration", typeof(ClassDeclarationNode));
             var functionDeclaration = new NonTerminal("Function Declaration", typeof(FunctionDeclarationNode));
@@ -61,6 +67,13 @@ namespace NotchCpu.CompilerTasks
             var parameterDeclaration = new NonTerminal("Parameter Declaration");
             var parameterListDeclaration = new NonTerminal("Parameter Declaration List");
             var returnStatement = new NonTerminal("Return", typeof(ReturnStatementNode));
+
+            var continueStatement = new NonTerminal("Continue", typeof(ContinueStatementNode));
+            var breakStatement = new NonTerminal("Break", typeof(BreakStatementNode));
+            var forLoop = new NonTerminal("For", typeof(ForLoopNode));
+
+            var whileLoop = new NonTerminal("While", typeof(WhileLoopNode));
+            var doWhileLoop = new NonTerminal("Do While", typeof(DoWhileLoopNode));
 
             var functionCall = new NonTerminal("Function Call", typeof(FunctionCallNodeEx));
             var staticFunctionCall = new NonTerminal("Static Function Call", typeof(FunctionCallNodeEx));
@@ -78,30 +91,37 @@ namespace NotchCpu.CompilerTasks
                 | identifier
                 | staticFunctionCall
                 | functionCall 
-                | dataLiteral;
+                | dataLiteral
+                | comparison;
 
             assignment.Rule = identifier + "=" + expression;
             binaryOperation.Rule = expression + @operator + expression;
-            //comparison.Rule = expression + comparisonOperator + expression;
+            comparison.Rule = expression + comparisonOperator + expression;
             parenExpression.Rule = ToTerm("(") + expression + ")";
             variableDeclaration.Rule = types + identifier + "=" + (expression | dataLiteral);
 
-            statement.Rule = inlineASM 
+            statement.Rule = inlineASM
                 | (variableDeclaration + ";")
-                | (assignment + ";") 
-                | block 
+                | (assignment + ";")
+                | block
                 | functionDeclaration
                 | (staticFunctionCall + ";")
+                | ifStatement
                 | (functionCall + ";")
-                | (returnStatement + ";");
+                | (returnStatement + ";")
+                | (expression + ";")
+                | (doWhileLoop + ";")
+                | whileLoop
+                | forLoop
+                | (breakStatement + ";")
+                | (continueStatement + ";");
 
             block.Rule = ToTerm("{") + statementList + "}";
             functionblock.Rule = ToTerm("{") + functionList + "}";
 
             inlineASM.Rule = ToTerm("asm") + "{" + new FreeTextLiteral("inline asm", "}") + "}";
-            //ifStatement.Rule = ToTerm("if") + "(" + (expression | comparison) + ")" + statement;
-            //ifElseStatement.Rule = ToTerm("if") + "(" + expression + ")" + statement + this.PreferShiftHere() + "else" + statement;
-            
+            ifStatement.Rule = ToTerm("if") + "(" + expression + ")" + statement + (Empty | (PreferShiftHere() + "else" + statement));
+      
             parameterList.Rule = MakeStarRule(parameterList, ToTerm(","), expression);
             functionCall.Rule = identifier + "(" + parameterList + ")";
             staticFunctionCall.Rule = identifier + "." + functionCall;
@@ -109,12 +129,16 @@ namespace NotchCpu.CompilerTasks
             parameterDeclaration.Rule = types + identifier;
             parameterListDeclaration.Rule = MakeStarRule(parameterListDeclaration, ToTerm(","), parameterDeclaration);
 
-            functionDeclaration.Rule = protection + (ToTerm("static")|"") + retTypes + identifier + "(" + parameterListDeclaration + ")" + block;
-            
+            continueStatement.Rule = ToTerm("continue");
+            breakStatement.Rule = ToTerm("break");
+            forLoop.Rule = ToTerm("for") + "(" + (variableDeclaration | assignment | Empty) + ";" + (expression | Empty) + ";" + (assignment | Empty) + ")" + statement;
+            whileLoop.Rule = ToTerm("while") + "(" + expression + ")" + statement;
+            doWhileLoop.Rule = ToTerm("do") + statement + "while" + "(" + expression + ")";
 
+            functionDeclaration.Rule = protection + ToTerm("static") + retTypes + identifier + "(" + parameterListDeclaration + ")" + block;
             returnStatement.Rule = ToTerm("return") + expression;
 
-            classDeclaration.Rule = ( protection | "" ) + ToTerm("class") + identifier + functionblock;
+            classDeclaration.Rule = protection  + ToTerm("class") + identifier + functionblock;
 
             functionList.Rule = MakeStarRule(functionList, functionDeclaration);
             statementList.Rule = MakeStarRule(statementList, statement);
@@ -124,7 +148,7 @@ namespace NotchCpu.CompilerTasks
 
             this.RegisterBracePair("[", "]");
             this.Delimiters = "{}[](),:;+-*/%&|^!~<>=.";
-            this.MarkPunctuation(";", ",", "(", ")", "{", "}", "[", "]", ":", "class", ".");
+            this.MarkPunctuation(";", ",", "(", ")", "{", "}", "[", "]", ":", "class", ".", "else", "while", "do", "for", "break", "continue");
             this.MarkTransient(expression, parenExpression, statement, block, functionblock);//, parameterList);
 
             this.RegisterOperators(1, Associativity.Right, "==", "!=");

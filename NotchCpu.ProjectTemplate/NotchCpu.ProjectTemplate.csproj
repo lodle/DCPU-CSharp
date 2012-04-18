@@ -80,7 +80,9 @@
     <Content Include="Templates\Items\DCPUFile\Text.ico" />
     <Content Include="Templates\Items\TextFile\Text.ico" />
     <Content Include="Templates\Items\TextFile\TextFile.txt" />
-    <VSTemplate Include="Templates\Items\TextFile\TextFile.vstemplate" />
+    <VSTemplate Include="Templates\Items\TextFile\TextFile.vstemplate">
+      <SubType>Designer</SubType>
+    </VSTemplate>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\VSSDK\Microsoft.VsSDK.targets" />

@@ -30,19 +30,14 @@ namespace DCPUC
 
         public override void DoCompile(Scope scope, Register target) 
         {
+            int val = 0;
+
             if (AsString.StartsWith("0x"))
-            {
-                var hexPart = AsString.Substring(2).ToUpper();
-
-                while (hexPart.Length < 4) 
-                    hexPart = "0" + hexPart;
-
-                AddInstruction("SET", Scope.GetRegisterLabelFirst((int)target), "0x" + hexPart, "Literal", null);
-            }
+                val = Util.atoh(AsString);
             else
-            {
-                AddInstruction("SET", Scope.GetRegisterLabelFirst((int)target), Util.hex(AsString), "Literal", null);
-            }
+                val = Int32.Parse(AsString);
+
+            AddInstruction("SET", Scope.GetRegisterLabelFirst((int)target), Util.htoa(val), "Literal", null);
 
             if (target == Register.STACK) 
                 scope.stackDepth += 1;

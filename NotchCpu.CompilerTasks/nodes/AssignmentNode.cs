@@ -10,7 +10,7 @@ namespace DCPUC
     {
         protected override void DoInit(Irony.Parsing.ParsingContext context, Irony.Parsing.ParseTreeNode treeNode)
         {
-            AddChild("LValue", treeNode.ChildNodes[0].ChildNodes[0]);
+            AddChild("LValue", treeNode.ChildNodes[0]);
             AddChild("RValue", treeNode.ChildNodes[2]);
 
             Annotation.type = AnotationType.Assignment;

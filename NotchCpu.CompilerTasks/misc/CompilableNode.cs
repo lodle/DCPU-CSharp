@@ -23,12 +23,18 @@ namespace DCPUC
                 s = hexDigits[x % 16] + s;
                 x /= 16;
             }
-            while (s.Length < 4) s = '0' + s;
-            return s;
+
+            while (s.Length < 2) 
+                s = '0' + s;
+
+            return "0x" + s;
         }
 
         public static ushort atoh(string s)
         {
+            if (s.StartsWith("0x"))
+                s = s.Substring(2);
+
             ushort h = 0;
             s = s.ToUpper();
             for (int i = 0; i < s.Length; ++i)
@@ -42,12 +48,12 @@ namespace DCPUC
 
         public static String hex(int x) 
         { 
-            return "0x" + htoa(x); 
+            return htoa(x); 
         }
 
         public static String hex(string x) 
         { 
-            return "0x" + htoa(Convert.ToInt16(x)); 
+            return htoa(Convert.ToInt16(x)); 
         }
     }
 
@@ -153,6 +159,11 @@ namespace DCPUC
         protected virtual AsmInfo AddInstruction(string ins, string a, string b, Annotation ano)
         {
             return AddInstruction(ins, a, b, "", ano);
+        }
+
+        protected virtual AsmInfo AddInstruction(string ins, string a, string b, string c)
+        {
+            return AddInstruction(ins, a, b, c, null);
         }
 
         protected virtual AsmInfo AddInstruction(string ins, string a, string b, string c, Annotation ano)

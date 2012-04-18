@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Irony.Interpreter.Ast;
+using NotchCpu.CompilerTasks;
+using NotchCpu.CompilerTasks.misc;
+using NotchCpu.CompilerTasks.nodes.loops;
 
 namespace DCPUC
 {
@@ -151,6 +154,27 @@ namespace DCPUC
         public static void AddData(string label, List<ushort> data)
         {
             dataElements.Add(new Tuple<string, List<ushort>>(label, data));
+        }
+
+
+        Stack<LoopFunctionCompilableNode> _LoopStack = new Stack<LoopFunctionCompilableNode>();
+
+        internal LoopFunctionCompilableNode PeekLoop()
+        {
+            if (_LoopStack.Count == 0 && parent != null)
+                return parent.PeekLoop();
+
+            return _LoopStack.Peek();
+        }
+
+        internal void PushLoop(LoopFunctionCompilableNode loopNode)
+        {
+            _LoopStack.Push(loopNode);
+        }
+
+        internal void PopLoop()
+        {
+            _LoopStack.Pop();
         }
     }
 }

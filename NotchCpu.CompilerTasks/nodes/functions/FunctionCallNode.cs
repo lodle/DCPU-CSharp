@@ -78,6 +78,26 @@ namespace DCPUC
                         scope.activeFunction.LocalScope.variables[i].stackOffset = scope.stackDepth - 1;
                     }
                 }
+            }
+
+            bool[] done = new bool[3];
+
+            //make sure we use the variables that are needed first
+            for (int i = 0; i < 3; ++i)
+            {
+                if (_Func.ParameterCount > i && ChildNodes[i] is VariableNameNode)
+                {
+                    scope.UseRegister(i);
+                    (ChildNodes[i] as CompilableNode).DoCompile(scope, (Register)i);
+
+                    done[i] = true;
+                }
+            }
+
+            for (int i = 0; i < 3; ++i)
+            {
+                if (done[i])
+                    continue;
 
                 if (_Func.ParameterCount > i)
                 {

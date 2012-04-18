@@ -58,6 +58,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="nodes\loops\ForLoopNode.cs" />
+    <Compile Include="nodes\loops\DoWhileLoopNode.cs" />
     <Compile Include="misc\Anotation.cs" />
     <Compile Include="misc\Assembly.cs" />
     <Compile Include="misc\CodeGenEx.cs" />
@@ -72,12 +74,13 @@
     <Compile Include="nodes\BinaryOperationNode.cs" />
     <Compile Include="nodes\BlockNode.cs" />
     <Compile Include="nodes\DataLiteralNode.cs" />
-    <Compile Include="nodes\FunctionCallNode.cs" />
-    <Compile Include="nodes\FunctionDeclarationNode.cs" />
-    <Compile Include="nodes\FunctionNode.cs" />
+    <Compile Include="nodes\functions\FunctionCallNode.cs" />
+    <Compile Include="nodes\functions\FunctionDeclarationNode.cs" />
+    <Compile Include="nodes\functions\FunctionNode.cs" />
     <Compile Include="nodes\IfStatementNode.cs" />
     <Compile Include="nodes\InlineASMNode.cs" />
     <Compile Include="nodes\LibraryFunctionNode.cs" />
+    <Compile Include="nodes\loops\LoopNode.cs" />
     <Compile Include="nodes\NumberLiteralNode.cs" />
     <Compile Include="nodes\ReturnStatementNode.cs" />
     <Compile Include="nodes\VariableDeclarationNode.cs" />
@@ -86,12 +89,13 @@
     <Compile Include="nodes\ClassDeclarationNode.cs" />
     <Compile Include="nodes\ClassNode.cs" />
     <Compile Include="CSharpGrammer.cs" />
-    <Compile Include="nodes\FunctionCallNodeEx.cs" />
+    <Compile Include="nodes\functions\FunctionCallNodeEx.cs" />
     <Compile Include="nodes\VariableDeclarationNodeEx.cs" />
     <Compile Include="NotchCpuCompilerTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="nodes\loops\WhileLoopNode.cs" />
     <None Include="unused\DereferenceNode.cs" />
-    <None Include="unused\ComparisonNode.cs" />
+    <Compile Include="nodes\ComparisonNode.cs" />
     <None Include="unused\BranchStatementNode.cs" />
   </ItemGroup>
   <ItemGroup>

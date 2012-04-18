@@ -21,6 +21,8 @@ namespace NotchCpu.CompilerTasks
         List<FunctionDeclarationNode> _FunctionList = new List<FunctionDeclarationNode>();
         Dictionary<String, ClassDeclarationNode> _ClassLookup = new Dictionary<string, ClassDeclarationNode>();
 
+        
+
         bool _EmitMainJump;
 
         public AssemblyGen AssemblyGen { get; protected set; }

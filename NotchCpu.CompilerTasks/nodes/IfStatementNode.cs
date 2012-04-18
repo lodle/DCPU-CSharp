@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using Irony.Interpreter.Ast;
 using Irony.Parsing;
+using NotchCpu.CompilerTasks.misc;
 
 namespace DCPUC
 {
-    public class IfStatementNode : CompilableNode
+    public class IfStatementNode : FunctionCompilableNode
     {
         public enum ClauseOrder
         {
@@ -19,11 +20,11 @@ namespace DCPUC
 
         protected override void DoInit(Irony.Parsing.ParsingContext context, Irony.Parsing.ParseTreeNode treeNode)
         {
-            AddChild("Expression", treeNode.ChildNodes[1].FirstChild);
+            AddChild("Expression", treeNode.ChildNodes[1]);
             AddChild("Block", treeNode.ChildNodes[2]);
 
-            if (treeNode.ChildNodes.Count == 5) 
-                AddChild("Else", treeNode.ChildNodes[4]);
+            if (treeNode.ChildNodes.Count == 4 && treeNode.ChildNodes[3].ChildNodes.Count() > 0) 
+                AddChild("Else", treeNode.ChildNodes[3].FirstChild);
 
             this.AsString = "If";
         }
@@ -39,26 +40,35 @@ namespace DCPUC
 
         public override void DoCompile(Scope scope, Register target)
         {
-            var clauseOrder = CompileConditional(scope, ChildNodes[0] as CompilableNode);
+            (ChildNodes[0] as CompilableNode).DoCompile(scope, Register.STACK);
 
-            if (clauseOrder == ClauseOrder.ConstantPass)
+
+            var label = Scope.GetLabel();
+
+            AddInstruction("SET", "PUSH", "0x01");
+            AddInstruction("IFN", "POP", "POP", "Check if result is false", Annotation);
+
+            if (ChildNodes.Count() == 3)
+                AddInstruction("SET", "PC", label + "_ELSE");
+            else
+                AddInstruction("SET", "PC", label + "_END");
+
+            (ChildNodes[1] as CompilableNode).DoCompile(scope, Register.DISCARD);
+
+            if (ChildNodes.Count() == 3)
             {
-                CompileBlock(scope, ChildNodes[1]);
+                AddInstruction("SET", "PC", label + "_END");
+                AddInstruction(":" + label + "_ELSE", "", "");
+
+                (ChildNodes[2] as CompilableNode).DoCompile(scope, Register.DISCARD);
             }
-            else if (clauseOrder == ClauseOrder.ConstantFail)
-            {
-                if (ChildNodes.Count == 3)
-                    CompileBlock(scope, ChildNodes[2]);
-            }
-            else if (clauseOrder == ClauseOrder.PassFirst)
-            {
-                CompilePassFirst(scope);
-            }
-            else if (clauseOrder == ClauseOrder.FailFirst)
-            {
-                CompileFailFirst(scope);
-            }
+
+            AddInstruction("SET", "PC", label + "_END");
+            AddInstruction(":" + label + "_END", "", "");
         }
+
+
+
 
         public ClauseOrder CompileConditional(Scope scope, CompilableNode conditionNode)
         {
@@ -190,8 +200,6 @@ namespace DCPUC
                 releaseRegister(scope, secondRegister);
                 return ClauseOrder.FailFirst;
             }
-
-            return ClauseOrder.FailFirst;
         }
 
         private void CompilePassFirst(Scope scope)
